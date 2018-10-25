@@ -1,4 +1,5 @@
-var config = {
+$('.modal').modal();
+ var config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
@@ -8,7 +9,7 @@ var config = {
 
 var player;
 var stars;
-var bombs;
+var monster1;
 var platforms;
 var cursors;
 var score = 0;
@@ -21,7 +22,7 @@ function preload() {
     this.load.image('sky', './assets/ressources/stage1/sky.png');
     this.load.image('ground', './assets/ressources/platform.png');
     this.load.image('star', './assets/ressources/item/star.png');
-    this.load.image('bomb', './assets/ressources/item/bomb.png');
+    this.load.spritesheet('monster1', './assets/ressources/charact/monster/p1_spritesheet.png', {frameWidth: 52,frameHeight: 52});
     this.load.spritesheet('dude', './assets/ressources/charact/Canard_1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
@@ -65,18 +66,18 @@ function create() {
         //  Give each star a slightly different bounce
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
-    bombs = this.physics.add.group();
+    monster1 = this.physics.add.group();
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
-    this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(monster1, platforms);
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     this.physics.add.overlap(player, stars, collectStar, null, this);
 
-    this.physics.add.collider(player, bombs, hitBomb, null, this);
+    this.physics.add.collider(player, monster1, hitBomb, null, this);
 }
 
 function update () {
@@ -140,7 +141,7 @@ function collectStar(player, star)
             child.enableBody(true, child.x, 0, true, true);
         });
         var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-        var bomb = bombs.create(x, 16, 'bomb');
+        var monster1 = bombs.create(x, 16, 'monster1');
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -148,7 +149,7 @@ function collectStar(player, star)
     }
 }
 
-function hitBomb (player, bomb)
+function hitBomb (player, monster1)
 {
     this.physics.pause();
     player.setTint(0xff0000);
